@@ -1,0 +1,735 @@
+﻿<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="8/11/2025 9:46:23 PM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="CARO"
+  DTS:CreatorName="CARO\diann"
+  DTS:DTSID="{40B86D6D-5263-4927-835D-AC201328364F}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="16.0.5685.2"
+  DTS:LocaleID="17418"
+  DTS:ObjectName="Package1"
+  DTS:PackageType="5"
+  DTS:VersionBuild="7"
+  DTS:VersionGUID="{0EA6575E-9BCD-4A07-82AB-5127A1DE3C9D}">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:ConnectionManagers>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[localhost\MSSQLSERVER01.TailspinToys2020-US]"
+      DTS:CreationName="OLEDB"
+      DTS:DTSID="{529D7F3B-0B9D-4C23-9266-C9FE4C40B145}"
+      DTS:ObjectName="localhost\MSSQLSERVER01.TailspinToys2020-US">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectRetryCount="1"
+          DTS:ConnectRetryInterval="5"
+          DTS:ConnectionString="Data Source=localhost\MSSQLSERVER01;Initial Catalog=TailspinToys2020-US;Provider=MSOLEDBSQL.1;Integrated Security=SSPI;Application Name=SSIS-Package1-{529D7F3B-0B9D-4C23-9266-C9FE4C40B145}localhost\MSSQLSERVER01.TailspinToys2020-US;Auto Translate=False;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+  </DTS:ConnectionManagers>
+  <DTS:Variables />
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\DTF_DimBasura"
+      DTS:CreationName="Microsoft.Pipeline"
+      DTS:Description="Data Flow Task"
+      DTS:DTSID="{277ACABB-235D-46F2-86DD-57A209264B53}"
+      DTS:ExecutableType="Microsoft.Pipeline"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="DTF_DimBasura"
+      DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <pipeline
+          version="1">
+          <components>
+            <component
+              refId="Package\DTF_DimBasura\Lookup"
+              componentClassID="Microsoft.Lookup"
+              contactInfo="Lookup;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;6"
+              description="Joins additional columns to the data flow by looking up values in a table. For example, join to the 'employee id' column the employees table to get 'hire date' and 'employee name'. We recommend this transformation when the lookup table can fit into memory."
+              name="Lookup"
+              usesDispositions="true"
+              version="6">
+              <properties>
+                <property
+                  dataType="System.String"
+                  description="Specifies the SQL statement that generates the lookup table."
+                  expressionType="Notify"
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">SELECT 
+    id_basura_sk,
+    canal,  -- entero, sin conversión
+    UPPER(LTRIM(RTRIM(COALESCE(tipo_kit, 'N/A')))) AS tipo_kit,
+    UPPER(LTRIM(RTRIM(COALESCE(demografico, 'N/A')))) AS demografico,
+    UPPER(LTRIM(RTRIM(COALESCE(codigo_promocion, 'N/A')))) AS codigo_promocion
+FROM dbo.dim_basura;</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies a SQL statement that uses parameters to generate the lookup table."
+                  expressionType="Notify"
+                  name="SqlCommandParam"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">select * from (SELECT 
+    id_basura_sk,
+    canal,  -- entero, sin conversión
+    UPPER(LTRIM(RTRIM(COALESCE(tipo_kit, 'N/A')))) AS tipo_kit,
+    UPPER(LTRIM(RTRIM(COALESCE(demografico, 'N/A')))) AS demografico,
+    UPPER(LTRIM(RTRIM(COALESCE(codigo_promocion, 'N/A')))) AS codigo_promocion
+FROM dbo.dim_basura;) [refTable]
+where [refTable].[tipo_kit] = ? and [refTable].[demografico] = ? and [refTable].[codigo_promocion] = ?</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the type of connection used to access the reference dataset."
+                  name="ConnectionType"
+                  typeConverter="LookupConnectionType">0</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the cache type of the lookup table."
+                  name="CacheType"
+                  typeConverter="CacheType">0</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies how the Lookup transformation handles rows without matching entries in the reference data set."
+                  name="NoMatchBehavior"
+                  typeConverter="LookupNoMatchBehavior">1</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the percentage of the cache that is allocated for rows with no matching entries in the reference dataset."
+                  name="NoMatchCachePercentage">0</property>
+                <property
+                  dataType="System.Int32"
+                  description="Maximum Memory Usage for Reference Cache on a 32 bit platform."
+                  name="MaxMemoryUsage">25</property>
+                <property
+                  dataType="System.Int64"
+                  description="Maximum Memory Usage for Reference Cache on a 64 bit platform."
+                  name="MaxMemoryUsage64">25</property>
+                <property
+                  dataType="System.String"
+                  description="Indicates whether to reference metadata in an XML format."
+                  name="ReferenceMetadataXml">&lt;referenceMetadata&gt;&lt;referenceColumns&gt;&lt;referenceColumn name="id_basura_sk" dataType="DT_I8" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="canal" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="tipo_kit" dataType="DT_WSTR" length="100" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="demografico" dataType="DT_WSTR" length="100" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="codigo_promocion" dataType="DT_WSTR" length="50" precision="0" scale="0" codePage="0"/&gt;&lt;/referenceColumns&gt;&lt;/referenceMetadata&gt;</property>
+                <property
+                  containsID="true"
+                  dataType="System.String"
+                  description="Specifies the list of lineage identifiers that map to the parameters that the SQL statement in the SQLCommand property uses. Entries in the list are separated by semicolons."
+                  name="ParameterMap">#{Package\DTF_DimBasura\SRC_Basura.Outputs[OLE DB Source Output].Columns[tipo_kit]};#{Package\DTF_DimBasura\SRC_Basura.Outputs[OLE DB Source Output].Columns[demografico]};#{Package\DTF_DimBasura\SRC_Basura.Outputs[OLE DB Source Output].Columns[codigo_promocion]};</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Determines whether duplicate keys in the reference data should be treated as errors when full cache mode is used."
+                  name="TreatDuplicateKeysAsError">false</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\DTF_DimBasura\Lookup.Connections[OleDbConnection]"
+                  connectionManagerID="{8E019D51-2F62-45BC-A00A-5C7155E04E62}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[localhost_MSSQLSERVER01.DWTailspinToys]"
+                  description="Connection manager used to access lookup data."
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\DTF_DimBasura\Lookup.Inputs[Lookup Input]"
+                  name="Lookup Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\DTF_DimBasura\Lookup.Inputs[Lookup Input].Columns[demografico]"
+                      cachedDataType="wstr"
+                      cachedLength="50"
+                      cachedName="demografico"
+                      lineageId="Package\DTF_DimBasura\SRC_Basura.Outputs[OLE DB Source Output].Columns[demografico]">
+                      <properties>
+                        <property
+                          dataType="System.String"
+                          description="Specifies the column in the reference table that a column joins."
+                          name="JoinToReferenceColumn">demografico</property>
+                        <property
+                          dataType="System.Null"
+                          description="Specifies the column in the reference table from which a column is copied."
+                          name="CopyFromReferenceColumn" />
+                      </properties>
+                    </inputColumn>
+                    <inputColumn
+                      refId="Package\DTF_DimBasura\Lookup.Inputs[Lookup Input].Columns[tipo_kit]"
+                      cachedDataType="wstr"
+                      cachedLength="3"
+                      cachedName="tipo_kit"
+                      lineageId="Package\DTF_DimBasura\SRC_Basura.Outputs[OLE DB Source Output].Columns[tipo_kit]">
+                      <properties>
+                        <property
+                          dataType="System.String"
+                          description="Specifies the column in the reference table that a column joins."
+                          name="JoinToReferenceColumn">tipo_kit</property>
+                        <property
+                          dataType="System.Null"
+                          description="Specifies the column in the reference table from which a column is copied."
+                          name="CopyFromReferenceColumn" />
+                      </properties>
+                    </inputColumn>
+                    <inputColumn
+                      refId="Package\DTF_DimBasura\Lookup.Inputs[Lookup Input].Columns[codigo_promocion]"
+                      cachedDataType="wstr"
+                      cachedLength="20"
+                      cachedName="codigo_promocion"
+                      lineageId="Package\DTF_DimBasura\SRC_Basura.Outputs[OLE DB Source Output].Columns[codigo_promocion]">
+                      <properties>
+                        <property
+                          dataType="System.String"
+                          description="Specifies the column in the reference table that a column joins."
+                          name="JoinToReferenceColumn">codigo_promocion</property>
+                        <property
+                          dataType="System.Null"
+                          description="Specifies the column in the reference table from which a column is copied."
+                          name="CopyFromReferenceColumn" />
+                      </properties>
+                    </inputColumn>
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\DTF_DimBasura\Lookup.Outputs[Lookup Match Output]"
+                  errorOrTruncationOperation="Lookup"
+                  exclusionGroup="1"
+                  name="Lookup Match Output"
+                  synchronousInputId="Package\DTF_DimBasura\Lookup.Inputs[Lookup Input]">
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\DTF_DimBasura\Lookup.Outputs[Lookup No Match Output]"
+                  description="The Lookup output that handles rows with no matching entries in the reference dataset. Use this output when the NoMatchBehavior property is set to &quot;Send rows with no matching entries to the no match output.&quot;"
+                  exclusionGroup="1"
+                  name="Lookup No Match Output"
+                  synchronousInputId="Package\DTF_DimBasura\Lookup.Inputs[Lookup Input]">
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\DTF_DimBasura\Lookup.Outputs[Lookup Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Lookup Error Output"
+                  synchronousInputId="Package\DTF_DimBasura\Lookup.Inputs[Lookup Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\DTF_DimBasura\Lookup.Outputs[Lookup Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\DTF_DimBasura\Lookup.Outputs[Lookup Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\DTF_DimBasura\Lookup.Outputs[Lookup Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\DTF_DimBasura\Lookup.Outputs[Lookup Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\DTF_DimBasura\OLE DB Destination"
+              componentClassID="Microsoft.OLEDBDestination"
+              contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4"
+              description="OLE DB Destination"
+              name="OLE DB Destination"
+              usesDispositions="true"
+              version="4">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset">[dbo].[dim_basura]</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">3</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepIdentity">false</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepNulls">false</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies options to be used with fast load.  Applies only if fast load is turned on."
+                  name="FastLoadOptions">TABLOCK,CHECK_CONSTRAINTS,ROWS_PER_BATCH = 10000</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies when commits are issued during data insertion.  A value of 0 specifies that one commit will be issued at the end of data insertion.  Applies only if fast load is turned on."
+                  name="FastLoadMaxInsertCommitSize">2147483647</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\DTF_DimBasura\OLE DB Destination.Connections[OleDbConnection]"
+                  connectionManagerID="{8E019D51-2F62-45BC-A00A-5C7155E04E62}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[localhost_MSSQLSERVER01.DWTailspinToys]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\DTF_DimBasura\OLE DB Destination.Inputs[OLE DB Destination Input]"
+                  errorOrTruncationOperation="Insert"
+                  errorRowDisposition="FailComponent"
+                  hasSideEffects="true"
+                  name="OLE DB Destination Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\DTF_DimBasura\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[canal]"
+                      cachedDataType="ui1"
+                      cachedName="canal"
+                      externalMetadataColumnId="Package\DTF_DimBasura\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[canal]"
+                      lineageId="Package\DTF_DimBasura\SRC_Basura.Outputs[OLE DB Source Output].Columns[canal]" />
+                    <inputColumn
+                      refId="Package\DTF_DimBasura\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[tipo_kit]"
+                      cachedDataType="wstr"
+                      cachedLength="3"
+                      cachedName="tipo_kit"
+                      externalMetadataColumnId="Package\DTF_DimBasura\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[tipo_kit]"
+                      lineageId="Package\DTF_DimBasura\SRC_Basura.Outputs[OLE DB Source Output].Columns[tipo_kit]" />
+                    <inputColumn
+                      refId="Package\DTF_DimBasura\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[demografico]"
+                      cachedDataType="wstr"
+                      cachedLength="50"
+                      cachedName="demografico"
+                      externalMetadataColumnId="Package\DTF_DimBasura\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[demografico]"
+                      lineageId="Package\DTF_DimBasura\SRC_Basura.Outputs[OLE DB Source Output].Columns[demografico]" />
+                    <inputColumn
+                      refId="Package\DTF_DimBasura\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[codigo_promocion]"
+                      cachedDataType="wstr"
+                      cachedLength="20"
+                      cachedName="codigo_promocion"
+                      externalMetadataColumnId="Package\DTF_DimBasura\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[codigo_promocion]"
+                      lineageId="Package\DTF_DimBasura\SRC_Basura.Outputs[OLE DB Source Output].Columns[codigo_promocion]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\DTF_DimBasura\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[id_basura_sk]"
+                      dataType="i8"
+                      name="id_basura_sk" />
+                    <externalMetadataColumn
+                      refId="Package\DTF_DimBasura\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[canal]"
+                      dataType="i4"
+                      name="canal" />
+                    <externalMetadataColumn
+                      refId="Package\DTF_DimBasura\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[tipo_kit]"
+                      dataType="wstr"
+                      length="100"
+                      name="tipo_kit" />
+                    <externalMetadataColumn
+                      refId="Package\DTF_DimBasura\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[demografico]"
+                      dataType="wstr"
+                      length="100"
+                      name="demografico" />
+                    <externalMetadataColumn
+                      refId="Package\DTF_DimBasura\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[codigo_promocion]"
+                      dataType="wstr"
+                      length="50"
+                      name="codigo_promocion" />
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\DTF_DimBasura\OLE DB Destination.Outputs[OLE DB Destination Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="OLE DB Destination Error Output"
+                  synchronousInputId="Package\DTF_DimBasura\OLE DB Destination.Inputs[OLE DB Destination Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\DTF_DimBasura\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\DTF_DimBasura\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\DTF_DimBasura\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\DTF_DimBasura\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\DTF_DimBasura\SRC_Basura"
+              componentClassID="Microsoft.OLEDBSource"
+              contactInfo="OLE DB Source;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;7"
+              description="OLE DB Source"
+              name="SRC_Basura"
+              usesDispositions="true"
+              version="7">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset"></property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">SELECT DISTINCT
+  p.Channels   AS canal,
+  COALESCE(p.KitType,'N/A')       AS tipo_kit,
+  COALESCE(p.Demographic,'N/A')   AS demografico,
+  COALESCE(s.PromotionCode,'N/A') AS codigo_promocion
+FROM dbo.Sales s
+JOIN dbo.Product p ON p.ProductID = s.ProductID;</property>
+                <property
+                  dataType="System.String"
+                  description="The variable that contains the SQL command to be executed."
+                  name="SqlCommandVariable"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">2</property>
+                <property
+                  dataType="System.String"
+                  description="The mappings between the parameters in the SQL command and variables."
+                  name="ParameterMapping"></property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\DTF_DimBasura\SRC_Basura.Connections[OleDbConnection]"
+                  connectionManagerID="Package.ConnectionManagers[localhost\MSSQLSERVER01.TailspinToys2020-US]"
+                  connectionManagerRefId="Package.ConnectionManagers[localhost\MSSQLSERVER01.TailspinToys2020-US]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <outputs>
+                <output
+                  refId="Package\DTF_DimBasura\SRC_Basura.Outputs[OLE DB Source Output]"
+                  name="OLE DB Source Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\DTF_DimBasura\SRC_Basura.Outputs[OLE DB Source Output].Columns[canal]"
+                      dataType="ui1"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\DTF_DimBasura\SRC_Basura.Outputs[OLE DB Source Output].ExternalColumns[canal]"
+                      lineageId="Package\DTF_DimBasura\SRC_Basura.Outputs[OLE DB Source Output].Columns[canal]"
+                      name="canal"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\DTF_DimBasura\SRC_Basura.Outputs[OLE DB Source Output].Columns[tipo_kit]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\DTF_DimBasura\SRC_Basura.Outputs[OLE DB Source Output].ExternalColumns[tipo_kit]"
+                      length="3"
+                      lineageId="Package\DTF_DimBasura\SRC_Basura.Outputs[OLE DB Source Output].Columns[tipo_kit]"
+                      name="tipo_kit"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\DTF_DimBasura\SRC_Basura.Outputs[OLE DB Source Output].Columns[demografico]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\DTF_DimBasura\SRC_Basura.Outputs[OLE DB Source Output].ExternalColumns[demografico]"
+                      length="50"
+                      lineageId="Package\DTF_DimBasura\SRC_Basura.Outputs[OLE DB Source Output].Columns[demografico]"
+                      name="demografico"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\DTF_DimBasura\SRC_Basura.Outputs[OLE DB Source Output].Columns[codigo_promocion]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\DTF_DimBasura\SRC_Basura.Outputs[OLE DB Source Output].ExternalColumns[codigo_promocion]"
+                      length="20"
+                      lineageId="Package\DTF_DimBasura\SRC_Basura.Outputs[OLE DB Source Output].Columns[codigo_promocion]"
+                      name="codigo_promocion"
+                      truncationRowDisposition="FailComponent" />
+                  </outputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\DTF_DimBasura\SRC_Basura.Outputs[OLE DB Source Output].ExternalColumns[canal]"
+                      dataType="ui1"
+                      name="canal" />
+                    <externalMetadataColumn
+                      refId="Package\DTF_DimBasura\SRC_Basura.Outputs[OLE DB Source Output].ExternalColumns[tipo_kit]"
+                      dataType="wstr"
+                      length="3"
+                      name="tipo_kit" />
+                    <externalMetadataColumn
+                      refId="Package\DTF_DimBasura\SRC_Basura.Outputs[OLE DB Source Output].ExternalColumns[demografico]"
+                      dataType="wstr"
+                      length="50"
+                      name="demografico" />
+                    <externalMetadataColumn
+                      refId="Package\DTF_DimBasura\SRC_Basura.Outputs[OLE DB Source Output].ExternalColumns[codigo_promocion]"
+                      dataType="wstr"
+                      length="20"
+                      name="codigo_promocion" />
+                  </externalMetadataColumns>
+                </output>
+                <output
+                  refId="Package\DTF_DimBasura\SRC_Basura.Outputs[OLE DB Source Error Output]"
+                  isErrorOut="true"
+                  name="OLE DB Source Error Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\DTF_DimBasura\SRC_Basura.Outputs[OLE DB Source Error Output].Columns[canal]"
+                      dataType="ui1"
+                      lineageId="Package\DTF_DimBasura\SRC_Basura.Outputs[OLE DB Source Error Output].Columns[canal]"
+                      name="canal" />
+                    <outputColumn
+                      refId="Package\DTF_DimBasura\SRC_Basura.Outputs[OLE DB Source Error Output].Columns[tipo_kit]"
+                      dataType="wstr"
+                      length="3"
+                      lineageId="Package\DTF_DimBasura\SRC_Basura.Outputs[OLE DB Source Error Output].Columns[tipo_kit]"
+                      name="tipo_kit" />
+                    <outputColumn
+                      refId="Package\DTF_DimBasura\SRC_Basura.Outputs[OLE DB Source Error Output].Columns[demografico]"
+                      dataType="wstr"
+                      length="50"
+                      lineageId="Package\DTF_DimBasura\SRC_Basura.Outputs[OLE DB Source Error Output].Columns[demografico]"
+                      name="demografico" />
+                    <outputColumn
+                      refId="Package\DTF_DimBasura\SRC_Basura.Outputs[OLE DB Source Error Output].Columns[codigo_promocion]"
+                      dataType="wstr"
+                      length="20"
+                      lineageId="Package\DTF_DimBasura\SRC_Basura.Outputs[OLE DB Source Error Output].Columns[codigo_promocion]"
+                      name="codigo_promocion" />
+                    <outputColumn
+                      refId="Package\DTF_DimBasura\SRC_Basura.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\DTF_DimBasura\SRC_Basura.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\DTF_DimBasura\SRC_Basura.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\DTF_DimBasura\SRC_Basura.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+          </components>
+          <paths>
+            <path
+              refId="Package\DTF_DimBasura.Paths[Lookup No Match Output]"
+              endId="Package\DTF_DimBasura\OLE DB Destination.Inputs[OLE DB Destination Input]"
+              name="Lookup No Match Output"
+              startId="Package\DTF_DimBasura\Lookup.Outputs[Lookup No Match Output]" />
+            <path
+              refId="Package\DTF_DimBasura.Paths[OLE DB Source Output]"
+              endId="Package\DTF_DimBasura\Lookup.Inputs[Lookup Input]"
+              name="OLE DB Source Output"
+              startId="Package\DTF_DimBasura\SRC_Basura.Outputs[OLE DB Source Output]" />
+          </paths>
+        </pipeline>
+      </DTS:ObjectData>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
+<!--Esta sección CDATA contiene la información de diseño del paquete. Esta sección incluye información como, por ejemplo, las coordenadas (x,y), el ancho y el alto.-->
+<!--Si edita manualmente esta sección y comete un error, puede eliminarlo. -->
+<!--El paquete podrá cargarse normalmente, pero se perderá la información de diseño anterior y el diseñador reorganizará los elementos automáticamente en la superficie de diseño.-->
+<Objects
+  Version="8">
+  <!--Cada uno de los nodos siguientes contiene propiedades que no afectan al comportamiento en tiempo de ejecución.-->
+  <Package
+    design-time-name="Package">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph">
+        <NodeLayout
+          Size="161,42"
+          Id="Package\DTF_DimBasura"
+          TopLeft="177,94" />
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+  <TaskHost
+    design-time-name="Package\DTF_DimBasura">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
+        <NodeLayout
+          Size="143,42"
+          Id="Package\DTF_DimBasura\SRC_Basura"
+          TopLeft="45,32" />
+        <NodeLayout
+          Size="115,42"
+          Id="Package\DTF_DimBasura\Lookup"
+          TopLeft="313,46" />
+        <EdgeLayout
+          Id="Package\DTF_DimBasura.Paths[OLE DB Source Output]"
+          TopLeft="188,53">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="125,14"
+              Start="0,0"
+              End="117.5,14">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="58.5,0" />
+                  <mssgle:CubicBezierSegment
+                    Point1="58.5,0"
+                    Point2="62.5,0"
+                    Point3="62.5,4" />
+                  <mssgle:LineSegment
+                    End="62.5,10" />
+                  <mssgle:CubicBezierSegment
+                    Point1="62.5,10"
+                    Point2="62.5,14"
+                    Point3="66.5,14" />
+                  <mssgle:LineSegment
+                    End="117.5,14" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="177,42"
+          Id="Package\DTF_DimBasura\OLE DB Destination"
+          TopLeft="212,164" />
+        <EdgeLayout
+          Id="Package\DTF_DimBasura.Paths[Lookup No Match Output]"
+          TopLeft="370.5,88">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-70,76"
+              Start="0,0"
+              End="-70,68.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,34" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,34"
+                    Point2="0,38"
+                    Point3="-4,38" />
+                  <mssgle:LineSegment
+                    End="-66,38" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-66,38"
+                    Point2="-70,38"
+                    Point3="-70,42" />
+                  <mssgle:LineSegment
+                    End="-70,68.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="-90.80638671875,43,111.6127734375,11.609375"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\DTF_DimBasura\SRC_Basura">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\DTF_DimBasura\Lookup">
+    <Properties>
+      <Property>
+        <Name>OverwriteParamsSQLProp</Name>
+        <Value
+          type="q2:boolean">false</Value>
+      </Property>
+      <Property>
+        <Name>UsedTableName</Name>
+        <Value
+          type="q3:string"></Value>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q4:int">0</Value>
+      </Property>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\DTF_DimBasura\OLE DB Destination">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+</Objects>]]></DTS:DesignTimeProperties>
+</DTS:Executable>
